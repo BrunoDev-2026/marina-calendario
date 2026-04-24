@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marina Buchardt - Calendário</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#c9a84c">
+    <meta name="description" content="Calendário profissional de gestão de eventos RH - Marina Buchardt">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="loading-screen">
+            <div class="loading-spinner"></div>
+            <p>Carregando...</p>
+        </div>
+
+        <!-- Main Container -->
+        <div class="container" id="mainContainer">
+
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <!-- Logo: tenta nome correto, fallback para nome duplicado caso ainda não renomeado -->
+                    <img
+                        id="headerLogo"
+                        src="{{ url_for('static', filename='calendario_marina_logo.png') }}"
+                        alt="Logo Marina Buchardt"
+                        class="header-logo"
+                        onerror="
+                            if (!this.dataset.tried) {
+                                this.dataset.tried = '1';
+                                this.src = '/static/calendario_marina_logo.png.png';
+                            }
+                        "
+                    >
+                    <div class="header-text">
+                        <h1>Marina <span>Buchardt</span></h1>
+                        <p>Calendário</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="status-item">
+                    <span class="status-label">📅 Hoje:</span>
+                    <span id="dataHoje" class="status-value"></span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">📊 Total de Eventos:</span>
+                    <span id="totalEventos" class="status-value">0</span>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros-container">
+                <div class="filtro-grupo">
+                    <label for="filtroDepartamento">Departamento</label>
+                    <select id="filtroDepartamento" class="filtro-select">
+                        <option value="Todos">👥 Todos os Departamentos</option>
+                    </select>
+                </div>
+                <button id="btnHoje" class="btn-hoje">🏠 Ir para Hoje</button>
+            </div>
+
+            <!-- Calendário Header -->
+            <div class="calendario-header">
+                <button id="mesAnterior" class="nav-btn" title="Mês Anterior">&#8249;</button>
+                <div class="mes-info">
+                    <h2 id="mesAno" class="mes-ano"></h2>
+                    <div id="resumoMes" class="resumo-mes"></div>
+                </div>
+                <button id="mesProximo" class="nav-btn" title="Próximo Mês">&#8250;</button>
+            </div>
+
+            <!-- Contadores -->
+            <div class="contadores-container" id="contadores"></div>
+
+            <!-- Calendário Grid -->
+            <div class="calendario-wrapper">
+                <div class="calendario-grid" id="calendarioGrid"></div>
+            </div>
+
+        </div><!-- /container -->
+
+        <!-- Modal Visualizar Evento -->
+        <div id="modalVisualizar" class="modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-card">
+                <div class="modal-header">
+                    <div class="modal-data-container">
+                        <h3 id="modalDataViz"></h3>
+                        <div id="modalContadorViz" class="modal-contador"></div>
+                    </div>
+                    <button class="fechar-modal" id="fecharModalViz" aria-label="Fechar">&#215;</button>
+                </div>
+                <div class="modal-body" id="modalBodyViz"></div>
+            </div>
+        </div>
+
+        <!-- Modal Adicionar Evento -->
+        <div id="modalAdicionar" class="modal">
+            <div class="modal-overlay"></div>
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3 id="modalTituloAdd">Novo Evento</h3>
+                    <button class="fechar-modal" id="fecharModalAdd" aria-label="Fechar">&#215;</button>
+                </div>
+                <form id="formEvento" class="modal-body">
+                    <input type="hidden" id="eventoData" name="data">
+
+                    <div class="form-group">
+                        <label for="addDepartamento">Departamento</label>
+                        <select id="addDepartamento" name="departamento" required>
+                            <option value="">Selecione o departamento...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addTitulo">Título do Evento</label>
+                        <input type="text" id="addTitulo" name="titulo" required placeholder="Ex: Reunião Estratégia">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addHora">Horário</label>
+                        <input type="time" id="addHora" name="hora" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addDuracao">Duração</label>
+                        <input type="text" id="addDuracao" name="duracao" placeholder="Ex: 2h">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addLocal">Local</label>
+                        <input type="text" id="addLocal" name="local" placeholder="Ex: Sala de Reuniões 1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addDescricao">Descrição</label>
+                        <textarea id="addDescricao" name="descricao" rows="3" placeholder="Detalhes opcionais..."></textarea>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button type="button" id="btnCancelarAdd" class="btn-secundario">Cancelar</button>
+                    <button type="submit" form="formEvento" class="btn-primario">✦ Salvar Evento</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toastContainer" class="toast-container"></div>
+
+    </div><!-- /app-container -->
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/static/sw.js")
+                    .then(reg => console.log("SW registrado:", reg.scope))
+                    .catch(err => console.warn("SW falhou:", err));
+            });
+        }
+    </script>
+</body>
+</html>
