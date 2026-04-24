@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: marina-buchardt-calendario
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    envVars:
+      - key: DB_PATH
+        value: /opt/render/project/src/eventos.db
+    disk:
+      name: calendario-db
+      mountPath: /opt/render/project/src
+      sizeGB: 1

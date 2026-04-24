@@ -9,9 +9,9 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# ── Banco de dados SQLite ──────────────────────────────────────────────────────
-# No Render, usa /tmp para escrita. Para persistência real use Render Disk.
-DB_PATH = os.environ.get("DB_PATH", "eventos.db")
+# ── Banco de dados SQLite ──────────────────────────────────────────────
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "eventos.db")
 
 DEPARTAMENTOS = {
     "Produção":       "#FF6B6B",
@@ -28,9 +28,9 @@ def get_db():
     return conn
 
 def init_db():
-    """Cria a tabela e insere dados de exemplo se estiver vazia."""
     conn = get_db()
     cur = conn.cursor()
+
     cur.execute("""
         CREATE TABLE IF NOT EXISTS eventos (
             id           TEXT PRIMARY KEY,
@@ -45,7 +45,6 @@ def init_db():
         )
     """)
 
-    # Insere dados de exemplo apenas se a tabela estiver vazia
     cur.execute("SELECT COUNT(*) FROM eventos")
     if cur.fetchone()[0] == 0:
         exemplos = [
@@ -56,6 +55,7 @@ def init_db():
             ("evt5", "2026-04-20", "Enfermaria",      "Campanha Saúde",      "16:00", "2h",    "Enfermaria",   "Exames preventivos"),
             ("evt6", "2026-04-25", "Administrativo",  "Relatórios Mensais",  "08:00", "3h",    "Sala Adm.",    "Financeiro e RH"),
         ]
+
         cur.executemany("""
             INSERT INTO eventos (id, data, departamento, titulo, hora, duracao, local, descricao)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -64,11 +64,10 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Inicializa o banco ao subir a aplicação
+# Inicializa banco
 init_db()
 
-
-# ── Rotas ──────────────────────────────────────────────────────────────────────
+# ── Rotas ──────────────────────────────────────────────────────────────
 
 @app.route("/")
 def index():
@@ -79,58 +78,57 @@ def index():
 def get_config():
     return jsonify({
         "departamentos": list(DEPARTAMENTOS.keys()),
-        "data_atual":    datetime.now().strftime("%Y-%m-%d"),
+        "data_atual": datetime.now().strftime("%Y-%m-%d"),
     })
 
 
 @app.route("/api/eventos")
 def get_eventos():
-    mes          = request.args.get("mes",          datetime.now().strftime("%Y-%m"))
+    mes = request.args.get("mes", datetime.now().strftime("%Y-%m"))
     departamento = request.args.get("departamento", "Todos")
 
     conn = get_db()
-    cur  = conn.cursor()
+    cur = conn.cursor()
 
     if departamento == "Todos":
         cur.execute(
-            "SELECT * FROM eventos WHERE data LIKE ? ORDER BY hora",
+            "SELECT * FROM eventos WHERE data LIKE ? ORDER BY data, hora",
             (f"{mes}%",)
         )
     else:
         cur.execute(
-            "SELECT * FROM eventos WHERE data LIKE ? AND departamento = ? ORDER BY hora",
+            "SELECT * FROM eventos WHERE data LIKE ? AND departamento = ? ORDER BY data, hora",
             (f"{mes}%", departamento)
         )
 
     rows = cur.fetchall()
 
-    # Agrupa por data
-    eventos_filtrados: dict = defaultdict(list)
+    eventos_filtrados = defaultdict(list)
     for row in rows:
         eventos_filtrados[row["data"]].append({
-            "id":           row["id"],
+            "id": row["id"],
             "departamento": row["departamento"],
-            "titulo":       row["titulo"],
-            "hora":         row["hora"],
-            "duracao":      row["duracao"],
-            "local":        row["local"],
-            "descricao":    row["descricao"],
+            "titulo": row["titulo"],
+            "hora": row["hora"],
+            "duracao": row["duracao"],
+            "local": row["local"],
+            "descricao": row["descricao"],
         })
 
-    # Contadores (todos os departamentos do mês, sem filtro)
     cur.execute(
         "SELECT departamento, COUNT(*) as total FROM eventos WHERE data LIKE ? GROUP BY departamento",
         (f"{mes}%",)
     )
     contadores = {row["departamento"]: row["total"] for row in cur.fetchall()}
+
     conn.close()
 
     total = sum(len(v) for v in eventos_filtrados.values())
 
     return jsonify({
-        "eventos":       dict(eventos_filtrados),
+        "eventos": dict(eventos_filtrados),
         "departamentos": DEPARTAMENTOS,
-        "contadores":    contadores,
+        "contadores": contadores,
         "total_eventos": total,
     })
 
@@ -139,10 +137,10 @@ def get_eventos():
 def criar_evento():
     data = request.get_json(silent=True) or {}
 
-    data_str     = (data.get("data")         or "").strip()
+    data_str = (data.get("data") or "").strip()
     departamento = (data.get("departamento") or "").strip()
-    titulo       = (data.get("titulo")       or "").strip()
-    hora         = (data.get("hora")         or "").strip()
+    titulo = (data.get("titulo") or "").strip()
+    hora = (data.get("hora") or "").strip()
 
     if not data_str:
         return jsonify({"success": False, "message": "Campo 'data' obrigatório"}), 400
@@ -161,6 +159,7 @@ def criar_evento():
         return jsonify({"success": False, "message": "Formato de data inválido"}), 400
 
     evento_id = str(uuid.uuid4())[:8]
+
     conn = get_db()
     conn.execute("""
         INSERT INTO eventos (id, data, departamento, titulo, hora, duracao, local, descricao)
@@ -171,8 +170,8 @@ def criar_evento():
         departamento,
         titulo,
         hora,
-        (data.get("duracao")  or "").strip(),
-        (data.get("local")    or "").strip(),
+        (data.get("duracao") or "").strip(),
+        (data.get("local") or "").strip(),
         (data.get("descricao") or "").strip(),
     ))
     conn.commit()
@@ -184,17 +183,19 @@ def criar_evento():
 @app.route("/api/eventos/<evento_id>", methods=["DELETE"])
 def excluir_evento(evento_id):
     conn = get_db()
-    cur  = conn.cursor()
+    cur = conn.cursor()
+
     cur.execute("DELETE FROM eventos WHERE id = ?", (evento_id,))
     conn.commit()
-    deletados = cur.rowcount
-    conn.close()
 
-    if deletados:
+    if cur.rowcount:
+        conn.close()
         return jsonify({"success": True}), 200
+
+    conn.close()
     return jsonify({"success": False, "message": "Evento não encontrado"}), 404
 
 
-# ── Entry point ────────────────────────────────────────────────────────────────
+# ── Entry point ────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0", port=5000)
+    app.run()
