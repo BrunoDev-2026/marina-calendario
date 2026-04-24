@@ -23,8 +23,10 @@ Ideal para uso interno em empresas, setores administrativos ou controle organiza
 <h2 align="center">🖼️ Prévia do Projeto</h2>
 
 <p align="center">
-  <img src="assets/calendario-preview.png" width="100%">
+  <img src="./asset/calendario-preview.png" width="100%">
 </p>
+
+---
 
 ## 🚀 Funcionalidades
 
@@ -39,12 +41,12 @@ Ideal para uso interno em empresas, setores administrativos ou controle organiza
 
 Cada setor possui identidade visual própria:
 
-- Produção
-- Logística
-- Administrativo
-- RH
-- Comercial
-- Enfermaria
+- Produção  
+- Logística  
+- Administrativo  
+- RH  
+- Comercial  
+- Enfermaria  
 
 ### 📆 Calendário Inteligente
 
@@ -71,16 +73,16 @@ Cada setor possui identidade visual própria:
 
 ## 🧠 Tecnologias Utilizadas
 
-| Tecnologia | Função             |
-| ---------- | ------------------ |
-| Python     | Backend            |
-| Flask      | API REST           |
-| SQLite     | Banco de Dados     |
-| Gunicorn   | Produção           |
-| HTML5      | Estrutura          |
-| CSS3       | Design             |
-| JavaScript | Interações         |
-| PWA        | Instalação Offline |
+| Tecnologia | Função |
+|-----------|--------|
+| Python | Backend |
+| Flask | API REST |
+| SQLite | Banco de Dados |
+| Gunicorn | Produção |
+| HTML5 | Estrutura |
+| CSS3 | Design |
+| JavaScript | Interações |
+| PWA | Instalação Offline |
 
 ---
 
@@ -91,6 +93,9 @@ marina-calendario/
 │── app.py
 │── requirements.txt
 │── eventos.db
+│── README.md
+│── asset/
+│   └── calendario-preview.png
 │── templates/
 │   └── index.html
 │── static/
@@ -101,11 +106,8 @@ marina-calendario/
 │   └── calendario_marina_logo.png
 ⚙️ Como Rodar Localmente
 git clone https://github.com/seuusuario/seurepositorio.git
-
 cd seurepositorio
-
 pip install -r requirements.txt
-
 python app.py
 
 Acesse:
@@ -140,7 +142,3 @@ Desenvolvedor focado em criar soluções modernas, úteis e com identidade visua
 🟢 Projeto funcional
 🟡 Em constante evolução
 🔒 Uso privado no momento
-
-⭐ Observação Final
-
-```
