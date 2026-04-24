@@ -20,10 +20,11 @@ Ideal para uso interno em empresas, setores administrativos ou controle organiza
 
 ---
 
-## 🖼️ Preview do Projeto
+## 🖼️ Prévia do Projeto
 
-
-::contentReference[oaicite:0]{index=0}
+<p align="center">
+  <img src="./assets/calendario-preview.png" width="100%" alt="Preview do Projeto">
+</p>
 
 
 ---
