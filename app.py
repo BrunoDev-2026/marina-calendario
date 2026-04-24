@@ -197,12 +197,10 @@ def excluir_evento(evento_id):
 
 
 # ── Entry point ────────────────────────────────────────────────────────
-if __name__ == "__main__":
-    app.run()
-    import os
-from flask import request
-
 @app.route("/deploy", methods=["POST"])
 def deploy():
     os.system("bash /home/BrunoDev2016/deploy.sh")
     return "ok", 200
+
+if __name__ == "__main__":
+    app.run()
