@@ -20,12 +20,11 @@ Ideal para uso interno em empresas, setores administrativos ou controle organiza
 
 ---
 
-## 🖼️ Prévia do Projeto
+<h2 align="center">🖼️ Prévia do Projeto</h2>
 
 <p align="center">
-  <img src="./assets/calendario-preview.png" width="100%" alt="Preview do Projeto">
+  <img src="./assets/calendario-preview.png" width="100%">
 </p>
-
 
 ---
 
