@@ -20,23 +20,23 @@ Ideal para uso interno em empresas, setores administrativos ou controle organiza
 
 ---
 
-## 🖼️ Preview do Projeto
+<h2 align="center">🖼️ Prévia do Projeto</h2>
 
-
-::contentReference[oaicite:0]{index=0}
-
-
----
+<p align="center">
+  <img src="assets/calendario-preview.png" width="100%">
+</p>
 
 ## 🚀 Funcionalidades
 
 ### 📌 Gestão de Eventos
+
 - Criar novos eventos
 - Excluir eventos existentes
 - Organizar por data e horário
 - Descrição, local e duração
 
 ### 🏢 Departamentos Coloridos
+
 Cada setor possui identidade visual própria:
 
 - Produção
@@ -47,18 +47,21 @@ Cada setor possui identidade visual própria:
 - Enfermaria
 
 ### 📆 Calendário Inteligente
+
 - Navegação entre meses
 - Destaque do dia atual
 - Contagem mensal de eventos
 - Visualização rápida por clique
 
 ### 🎨 Interface Premium
+
 - Tema dark sofisticado
 - Efeitos glassmorphism
 - Tipografia elegante
 - Micro animações suaves
 
 ### 📱 Progressive Web App
+
 - Instalável no celular ou desktop
 - Funciona offline
 - Service Worker ativo
@@ -68,16 +71,16 @@ Cada setor possui identidade visual própria:
 
 ## 🧠 Tecnologias Utilizadas
 
-| Tecnologia | Função |
-|-----------|--------|
-| Python | Backend |
-| Flask | API REST |
-| SQLite | Banco de Dados |
-| Gunicorn | Produção |
-| HTML5 | Estrutura |
-| CSS3 | Design |
-| JavaScript | Interações |
-| PWA | Instalação Offline |
+| Tecnologia | Função             |
+| ---------- | ------------------ |
+| Python     | Backend            |
+| Flask      | API REST           |
+| SQLite     | Banco de Dados     |
+| Gunicorn   | Produção           |
+| HTML5      | Estrutura          |
+| CSS3       | Design             |
+| JavaScript | Interações         |
+| PWA        | Instalação Offline |
 
 ---
 
@@ -140,3 +143,4 @@ Desenvolvedor focado em criar soluções modernas, úteis e com identidade visua
 
 ⭐ Observação Final
 
+```
