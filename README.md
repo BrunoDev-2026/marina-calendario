@@ -23,7 +23,7 @@ Ideal para uso interno em empresas, setores administrativos ou controle organiza
 <h2 align="center">🖼️ Prévia do Projeto</h2>
 
 <p align="center">
-  <img src="templates/asset/calendario-preview.png" width="100%">
+  <img src="assets/calendario-preview.png" width="100%">
 </p>
 
 ---
@@ -94,7 +94,7 @@ marina-calendario/
 │── requirements.txt
 │── eventos.db
 │── README.md
-│── asset/
+│── assets/
 │   └── calendario-preview.png
 │── templates/
 │   └── index.html
