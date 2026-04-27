@@ -1,4 +1,4 @@
-# 📅 Marina Buchardt — Calendário Corporativo Premium
+# 📅 Marina Buchardt — Calendário Pessoal 
 
 Sistema web moderno e elegante para **gestão de eventos internos**, desenvolvido com foco em organização empresarial, produtividade e experiência visual refinada.
 
